@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+	div#wrapper {
+		width: 90px;
+		height: 90px;
+		border: 5px solid #000;
+		
+		/* overflow: hidden; */
+	}
+	div.page {
+		text-align: center;
+	  	width:90px;
+	  	height:90px;
+	}
+	</style>
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+</head>
+<body>
+  	<!-- 
+  		example buttons that you could pass as arguments to TouchCarousel 
+  		<button id="left">LEFT</button> 
+  		<button id="right">RIGHT</button>
+  	-->
+  	
+	<div id='wrapper'>
+		<div class="page" style='background-color:#aaa;'>0</div>
+		<div class="page" style='background-color:#bbb;'>1</div>
+    	<div class="page" style='background-color:#ccc;'>2</div>
+    	<div class="page" style='background-color:#aaa;'>3</div>
+		<div class="page" style='background-color:#bbb;'>4</div>
+    	<div class="page" style='background-color:#ccc;'>5</div>
+	</div>
+	
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+  	<script src="http://code.jquery.com/ui/1.8.22/jquery-ui.min.js"></script>
+  	<script src="js/jquery.ui.touch-punch.min.js"></script>
+  	<script src="js/TouchCarousel.js"></script>
+	<script>
+		$(document).ready(function(){
+			new TouchCarousel('#wrapper', {
+				pageClass: 'page',
+				auto: true//,
+				//autoDirection: 'right'
+			});
+		});
+	</script>
+</body>
+</html>
