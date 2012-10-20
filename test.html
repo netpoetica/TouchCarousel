@@ -38,8 +38,9 @@
   	<script src="js/jquery.ui.touch-punch.min.js"></script>
   	<script src="js/TouchCarousel.js"></script>
 	<script>
+		var carousel_container = null;
 		$(document).ready(function(){
-			new TouchCarousel('#wrapper', {
+				carousel_container = new TouchCarousel('#wrapper', {
 				pageClass: 'page',
 				auto: true,
 				height: 200,

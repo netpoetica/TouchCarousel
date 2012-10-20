@@ -188,102 +188,128 @@ var TouchCarousel = function(elem, options){
     }
     /* ******** MOVETOINDEX ***************** *
      * Move to specified index, left and right, 
-     * or anywhere for that matter 
+     * or anywhere for that matter .
+     * The first step is to figure out the direction/delta, based upon the given index vs. current page. 
      * ************************************* */
     this.moveToIndex = function(nextPageNum){
+    	console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         console.log(">> TouchCarousel.moveToIndex(" + nextPageNum + ")");
         console.log('>> currentPage = ' + currentPage);
-        console.log('>> -pageWidth = ' + -pageWidth);
         console.log('>> totalPages = ' + totalPages);
         
+        /*console.log(">> PAGE DETAILS <<");
+        var counter = totalPages;
+        while(counter >= 0){
+        	
+        	var current = $(arrPages)[counter];
+        	console.log("Page " + counter + ":");
+        	console.log("Left Pos: " + $(current).position().left);
+        	console.log("Index in parent: " + $(arrPages).index($(current)));
+        	console.log("Index relative to position: " + ($(current).position().left / pageWidth));
+        	counter--;
+        }*/
+        
+        var targetSrcDist;
+        
+        //prevent button mashing
         if(bIsAnimating){
             console.log(">> TouchCarousel.moveToIndex() already animating.")
-            //prevent button mashing
             return;
-        }
-        else{
+        } else{
             bIsAnimating = true;
         }
-                  
-         // The difference between the current page and the target page
-         var targetSrcDist = null;
-
+        
         if(nextPageNum < currentPage){
-            //Dragged Right
-            console.log('>> nextPageNum > currentPage');
-            
-            
-            targetSrcDist = parseInt(currentPage - nextPageNum);
-            
-            console.log(">> Right - targetSrcDist = " + targetSrcDist);
-                     
-            if((currentPage - targetSrcDist) < 0){
-                console.log("(currentPage - targetSrcDist) < 0");
-                currentPage = (totalPages - currentPage) * targetSrcDist;
-            }
-            else{
-                currentPage -= targetSrcDist;
-            }
-            //currentPage = (currentPage > 0) ? currentPage -= targetSrcDist : totalPages;
-            var lastPage = $(arrPages)[currentPage];
-            $(lastPage).css('left', -pageWidth * targetSrcDist);
-            
-            $(arrPages).stop().animate(
-            {
-                "left": "+=" + pageWidth * targetSrcDist + "px"
-                },
-                animationDuration,
-                function(){
-                    bIsAnimating = false;
-                }
-            );
-           
+        	//Dragged Right
+			console.log('>> RIGHT: nextPageNum < currentPage'); 	
+			
+			targetSrcDist = parseInt(currentPage - nextPageNum);	// The difference between the current page and the target page
+			console.log(">> targetSrcDist = " + targetSrcDist);
+			
+			// Move the movers first to make scrolling appear smooth
+			$($(arrPages).get().reverse()).each(function(){
+					var indexRelativeToPosition = ($(this).position().left / pageWidth);
+					console.log('>> indexRelativeToPosition = ' + indexRelativeToPosition);	
+					if(indexRelativeToPosition > 0){
+						console.log('>> moving $(this)');
+						console.log($(this).text());
+						console.log("to css left = " + (totalPages - indexRelativeToPosition + 1) * -pageWidth);
+						$(this).css('left', (totalPages - indexRelativeToPosition + 1) * -pageWidth);
+					}
+					else {
+						console.log(">> keeping $(this) at ");
+						console.log($(this).position().left);
+					}
+			});
+			
+			if((currentPage - targetSrcDist) < 0){  
+				console.log("(currentPage + targetSrcDist) < 0 == true");
+				currentPage = (totalPages + 1) - targetSrcDist;    	//Offset dependency on length    
+			}
+			else {
+				currentPage -= targetSrcDist;               
+			}
+			
+			console.log('>> new currentPage aka target page = ' + currentPage); 
+			
+			$(arrPages).animate(
+			{
+				"left": "+=" + pageWidth * targetSrcDist + "px"
+				},
+				animationDuration,
+				function(){
+					bIsAnimating = false;
+				}
+			);
         }
         
         else if(nextPageNum > currentPage){
             //Dragged Left
-            console.log('>> nextPageNum < currentPage');
-            targetSrcDist = parseInt(nextPageNum - currentPage);
+            console.log('>> LEFT: nextPageNum > currentPage');		
             
-            console.log(">> Left - targetSrcDist = " + targetSrcDist);
-            
-            /*var movers = [];
-            console.log('$(arrPages).length');
-            console.log($(arrPages).length);
-            for(var i = 0; i < $(arrPages).length; i++){
-                if(i < currentPage){
-                    movers.push($(arrPages)[i]);
-                }
-            }
-            console.log(">> MOVERS: <<");
-            console.log(movers);*/
-            var mover = $(arrPages)[currentPage];   // The block that's getting put to the far right
-            
-            if((currentPage + targetSrcDist) > totalPages){
+            targetSrcDist = parseInt(nextPageNum - currentPage);	// The difference between the current page and the target page
+			console.log(">> targetSrcDist = " + targetSrcDist);
+
+            if((currentPage + targetSrcDist) > totalPages){  
                 console.log("(currentPage + targetSrcDist) > totalPages == true");
-                //currentPage = (nextPageNum - totalPages) + targetSrcDist;
-                currentPage = (totalPages - currentPage) * -targetSrcDist;
+                currentPage = (totalPages - currentPage) * -targetSrcDist;        
             }
-            else{
-                currentPage += targetSrcDist;
+            else {
+                currentPage += targetSrcDist;               
             }
-            //currentPage = (currentPage < totalPages) ? currentPage += targetSrcDist : currentPage = 0;
             
-            $(arrPages).stop().animate(
+            console.log('>> new currentPage aka target page = ' + currentPage); 
+            
+            $(arrPages).animate(
             {
                 "left": "-=" + pageWidth * targetSrcDist + "px"
                 },
                 animationDuration,
                 function(){
-                    if(mover){
-                        $(mover).css('left', (totalPages) * pageWidth);
-                    }
+                	//console.log(">> arrPages animation callback <<");
+                	var indexRelativeToPosition = ($(this).position().left / pageWidth)
+                	//console.log('>> indexRelativeToPosition = ' + indexRelativeToPosition);	
+                	if(indexRelativeToPosition < 0){
+                		//console.log('>> moving $(this)');
+                		//console.log($(this));
+                		//console.log("to css left = " + (1 + (totalPages + indexRelativeToPosition)) * pageWidth);
+                		$(this).css('left', (1 + (totalPages + indexRelativeToPosition)) * pageWidth);
+                	}
                     bIsAnimating = false;
                 }
             );
-
         }
         else{
+        	//TODO: investigate 'already animating bug' - happens after u hit this else statement
+        	/*
+        	carousel_container.moveToIndex(8)
+			>> TouchCarousel.moveToIndex(8) TouchCarousel.js:194
+			>> currentPage = 2 TouchCarousel.js:195
+			>> -pageWidth = -400 TouchCarousel.js:196
+			>> totalPages = 5 TouchCarousel.js:197
+			>> modulo nextPageNum%totalPages = 3 TouchCarousel.js:202
+			>> TouchCarousel.moveToIndex() already animating.
+        	*/
             //You're tyring to go to the current page stupid. Durp.
             console.log(">> You're already on that index :/");
         }
@@ -318,6 +344,7 @@ var TouchCarousel = function(elem, options){
         });
         
         $(touchPad).draggable({
+        	//revert: true,
             delay: 100,
             scroll: true,
             axis: 'x',
