@@ -208,17 +208,6 @@ var TouchCarousel = function(elem, options){
     this.getCurrentPage = function(){
         return currentPage;
     }
-    /* get Index of Page based on Position:left relative to currentPage*/
-    this.getIndexByPos = function(pageIndex){
-    
-    	// This works when direction is going left...
-    	if(direction == 'left'){
-    		console.log($($(arrPages)[pageIndex]).position().left / pageWidth);
-    	}
-    	else if(direction == 'right'){
-    		console.log(($($(arrPages)[pageIndex]).position().left / pageWidth) - totalPages);
-    	}
-    }
     
     /* ***** DESTROY ******* *
      * Destroy the current carousel (events, etc)
