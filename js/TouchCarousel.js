@@ -83,7 +83,8 @@ var TouchCarousel = function(elem, options){
     $(elem).css({
         position: 'absolute',
         overflow: 'hidden',
-        height: opt.height || containerHeight + 'px'
+        height: containerHeight,
+        width: containerWidth
     });
 
     // Initialize the page indicator
@@ -312,8 +313,8 @@ var TouchCarousel = function(elem, options){
             'z-index': 9997,	// Buttons need to be above the 9998 z-index
             'background-color': 'rgba(1,0,0, ' + opt.touchPadVisibility || 0 +  ')',
             position: 'inherit',
-            width: opt.width || containerWidth + 'px',
-            height: opt.height || containerHeight + 'px'
+            width: containerWidth + 'px',
+            height: containerHeight + 'px'
         });
         
         $(touchPad).draggable({
