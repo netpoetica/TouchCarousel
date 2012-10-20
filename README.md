@@ -1,14 +1,13 @@
 TouchCarousel
 =============
 
-a jQuery Touch-enabled, auto-scrolling and infinite carousel for all devices including mobile
+A jQuery Touch-enabled, auto-scrolling and infinite carousel for all devices including mobile
 
-Name: TouchCarousel.js
-
-Author: Keith Rosenberg (http://www.github.com/netpoetica)
+TouchCarousel.js
+by Keith Rosenberg (http://www.github.com/netpoetica)
 
 Description: 
-TouchCarousel is an infinitely-looping carousel which can be configured in many ways. See
+TouchCarousel is an infinitely-looping, indexable carousel which can be configured in many ways. See
 options for details. TouchCarousel assumes you want this carousel to work on a mobile
 device or tablet - if that's not the case, pass options with touchDisabled = true. If you
 don't want it to autoscroll, pass options object with auto = false. You can specify buttons
