@@ -64,7 +64,7 @@ var TouchCarousel = function(elem, options){
     var bIsAnimating = false;
     var animationDuration = opt.animationDuration || 500;
     var btns = {};
-    var direction = 'right';				// 'right' || 'left'
+    var direction = opt.autoDirection || 'right';				// 'right' || 'left'
     
     // Debug
     //console.log("TouchCarousel.js Debug");
@@ -129,8 +129,8 @@ var TouchCarousel = function(elem, options){
      * reorient relative to current page and direction.
      * **************************** */
     function reorient(dir){
-    	console.log("!!!!!!!!!!!!!!!!!!!!!!!");
-    	console.log(">> REORIENTING: " + dir);
+    	//console.log("!!!!!!!!!!!!!!!!!!!!!!!");
+    	//console.log(">> REORIENTING: " + dir);
     	
     	var counter = 0;
     	
@@ -248,7 +248,7 @@ var TouchCarousel = function(elem, options){
 
 		// We're gonna go right
         if(nextPageNum < currentPage){
-			//console.log('>> MOVE RIGHT: nextPageNum < currentPage'); 
+			//console.log('>> MOVE RIGHT: nextPageNum('+nextPageNum+') < currentPage('+ currentPage + ')'); 
 	
 			if(direction !== 'right'){
 				reorient('right');
@@ -256,10 +256,12 @@ var TouchCarousel = function(elem, options){
 			
 			targetSrcDist = parseInt(currentPage - nextPageNum);	// The difference between the current page and the target page
 			//console.log(">> targetSrcDist = " + targetSrcDist);
-			
+			//console.log(">> currentPage = " + currentPage);
 			if((currentPage - targetSrcDist) < 0){  
-				//console.log("(currentPage + targetSrcDist) < 0 == true");
-				currentPage = (totalPages + 1) - targetSrcDist;    	//Offset dependency on length    
+                                // Catch someone trying to go too far and put them back to the front
+				//console.log("(currentPage - targetSrcDist) < 0");
+				currentPage = (totalPages + 1) - targetSrcDist;    	//Offset dependency on length
+                //targetSrcDist = currentPage;
 			}
 			else {
 				currentPage -= targetSrcDist;               
@@ -332,7 +334,7 @@ var TouchCarousel = function(elem, options){
         }
         else{
             //You're tyring to go to the current page stupid. Durp.
-            console.log(">> You're already on that index :/");
+            //console.log(">> You're already on that index :/");
             bIsAnimating = false;
         }
         
@@ -350,8 +352,7 @@ var TouchCarousel = function(elem, options){
      *	to have it disabled       *
      * ****************************** */
     if(!opt.touchDisabled){
-        var touchPad, touchpadLeft, touchpadWidth;
-        touchPad = $('<div id="touch-carousel-touchpad"></div');
+        var touchPad = $('<div id="touch-carousel-touchpad"></div');
         
         // Draggable triggered by click event
 
@@ -370,10 +371,6 @@ var TouchCarousel = function(elem, options){
             scroll: true,
             axis: 'x',
             start: function() {
-                // touchpad dimensions
-                touchpadLeft = $(this).position().left;
-                touchpadWidth = $(this).width();
-                
                 //clear autoscroll interval
                 clearInterval(autoIntervalRef);
             },
@@ -382,10 +379,6 @@ var TouchCarousel = function(elem, options){
             },
             stop: function() {
                 var touchpadDeltaLeft =  $(this).position().left;
-
-                //console.log('touchpadDeltaLeft = ' + touchpadDeltaLeft);
-                //console.log('touchpadLeft = ' + touchpadLeft);
-                //console.log('touchpadWidth = ' + touchpadWidth);
 
                 if (touchpadDeltaLeft > (containerWidth / 4)) {
                     //console.log('If dragged to the right further than halfway...');
@@ -426,11 +419,11 @@ var TouchCarousel = function(elem, options){
     /* ****** AUTOPAGE MECHANISM ******* */
     if(opt.auto){
         autoIntervalRef = setInterval(function(){
-            if(opt.autoDirection == 'left'){
-                _this.moveToIndex(currentPage - 1);
-            }
-            else if(opt.autoDirection == 'right'){
+            if(direction == 'left'){
                 _this.moveToIndex(currentPage + 1);
+            }
+            else if(direction == 'right'){
+                _this.moveToIndex(currentPage - 1);
             }
         }, opt.autoDuration || 4000);	// Default 4000
     }
