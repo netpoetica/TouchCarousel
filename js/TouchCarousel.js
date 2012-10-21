@@ -122,47 +122,47 @@ var TouchCarousel = function(elem, options){
         $(elem).append(pageIndicator);      // Add the populated inidicator
     }
 
-	reorient(direction);
+    reorient(direction);
 	
     /* ******* REORIENT ************* *
      * Make sure blocks are in right position to move in specified direction.
      * reorient relative to current page and direction.
      * **************************** */
     function reorient(dir){
-    	//console.log("!!!!!!!!!!!!!!!!!!!!!!!");
-    	//console.log(">> REORIENTING: " + dir);
+        //console.log("!!!!!!!!!!!!!!!!!!!!!!!");
+        //console.log(">> REORIENTING: " + dir);
     	
-    	var counter = 0;
+        var counter = 0;
     	
-    	// Rearrange the working array to use currentPage
-    	var pages = $(arrPages).get();
-    	var temp = pages.splice(currentPage);
-    	pages = temp.concat(pages);
+        // Rearrange the working array to use currentPage
+        var pages = $(arrPages).get();
+        var temp = pages.splice(currentPage);
+        pages = temp.concat(pages);
     	
-    	if(dir === 'left'){
-			$(pages).each(function(){
-				$(this).css({
-				  left: counter * pageWidth
-				});
-				counter++;
-			});
+        if(dir === 'left'){
+            $(pages).each(function(){
+                $(this).css({
+                    left: counter * pageWidth
+                });
+                counter++;
+            });
 			
-			direction = 'left';
-    	}
-    	else if(dir === 'right'){
-    		// Set counter first to make space for the 0 element
-    		$($(pages).get().reverse()).each(function(){
-    			counter++;
-				$(this).css({
-				  left: counter * -pageWidth
-				});
-			});
+            direction = 'left';
+        }
+        else if(dir === 'right'){
+            // Set counter first to make space for the 0 element
+            $($(pages).get().reverse()).each(function(){
+                counter++;
+                $(this).css({
+                    left: counter * -pageWidth
+                });
+            });
 			
-			// Put the 0 element in the first place :)
-			$(pages[0]).css('left', 0);
+            // Put the 0 element in the first place :)
+            $(pages[0]).css('left', 0);
 			
-			direction = 'right';
-    	}
+            direction = 'right';
+        }
     }
     
     /* ******* UPDATE ************* *
@@ -173,17 +173,21 @@ var TouchCarousel = function(elem, options){
         //console.log("TouchCarousel.update()...");
         // Update the page images depending on current page
         
-        var e = jQuery.Event("TouchCarousel.Update", { currentPage: currentPage });
+        var e = jQuery.Event("TouchCarousel.Update", { 
+            currentPage: currentPage,
+            direction: direction
+        });
         
         $(elem).trigger(e);
         var imgCounter = 0;
         
-        $('.touch-carousel-pager-item').find('img').each(function(){   
-            $(this).attr('src', String(imgCounter == currentPage ? opt.pagerImageActive : opt.pagerImageNormal));
-            imgCounter++;
-        });
+        if(!opt.pageIndicatorDisabled){
+            $('.touch-carousel-pager-item').find('img').each(function(){   
+                $(this).attr('src', String(imgCounter == currentPage ? opt.pagerImageActive : opt.pagerImageNormal));
+                imgCounter++;
+            });
+        }
 
-       
     }
     
     /* *** GET DIMENSIONS ***
@@ -233,10 +237,10 @@ var TouchCarousel = function(elem, options){
      * The first step is to figure out the direction/delta, based upon the given index vs. current page. 
      * ************************************* */
     this.moveToIndex = function(nextPageNum){
-    	//console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        //console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         //console.log(">> TouchCarousel.moveToIndex(" + nextPageNum + ")");
         //console.log(">> direction = " + direction);
-    	//prevent button mashing
+        //prevent button mashing
         if(bIsAnimating){
             //console.log(">> TouchCarousel.moveToIndex() already animating.")
             return;
@@ -246,48 +250,48 @@ var TouchCarousel = function(elem, options){
 
         var targetSrcDist;
 
-		// We're gonna go right
+        // We're gonna go right
         if(nextPageNum < currentPage){
-			//console.log('>> MOVE RIGHT: nextPageNum('+nextPageNum+') < currentPage('+ currentPage + ')'); 
+            //console.log('>> MOVE RIGHT: nextPageNum('+nextPageNum+') < currentPage('+ currentPage + ')'); 
 	
-			if(direction !== 'right'){
-				reorient('right');
-			}
+            if(direction !== 'right'){
+                reorient('right');
+            }
 			
-			targetSrcDist = parseInt(currentPage - nextPageNum);	// The difference between the current page and the target page
-			//console.log(">> targetSrcDist = " + targetSrcDist);
-			//console.log(">> currentPage = " + currentPage);
-			if((currentPage - targetSrcDist) < 0){  
-                                // Catch someone trying to go too far and put them back to the front
-				//console.log("(currentPage - targetSrcDist) < 0");
-				currentPage = (totalPages + 1) - targetSrcDist;    	//Offset dependency on length
-                //targetSrcDist = currentPage;
-			}
-			else {
-				currentPage -= targetSrcDist;               
-			}
+            targetSrcDist = parseInt(currentPage - nextPageNum);	// The difference between the current page and the target page
+            //console.log(">> targetSrcDist = " + targetSrcDist);
+            //console.log(">> currentPage = " + currentPage);
+            if((currentPage - targetSrcDist) < 0){  
+                // Catch someone trying to go too far and put them back to the front
+                //console.log("(currentPage - targetSrcDist) < 0");
+                currentPage = (totalPages + 1) - targetSrcDist;    	//Offset dependency on length
+            //targetSrcDist = currentPage;
+            }
+            else {
+                currentPage -= targetSrcDist;               
+            }
 			
-			//console.log('>> new currentPage aka target page = ' + currentPage); 
+            //console.log('>> new currentPage aka target page = ' + currentPage); 
 			
-			$(arrPages).animate(
-			{
-				"left": "+=" + pageWidth * targetSrcDist + "px"
-				},
-				animationDuration,
-				function(){
-					/*console.log("--------------------");
+            $(arrPages).animate(
+            {
+                "left": "+=" + pageWidth * targetSrcDist + "px"
+            },
+            animationDuration,
+            function(){
+                /*console.log("--------------------");
                 	console.log(">> arrPages RIGHT animation callback <<");	*/
-                	var indexRelativeToPosition = $(this).position().left / pageWidth;
-                	//console.log('>> indexRelativeToPosition = ' + indexRelativeToPosition);
-                	if(indexRelativeToPosition > 0){
-                		//console.log('>> moving $(this)');
-                		//console.log($(this));
-                		//console.log("to css left = " + ((totalPages - 1) + indexRelativeToPosition) * -pageWidth);
-                		$(this).css('left', ((totalPages - 1) + indexRelativeToPosition) * -pageWidth);
-                	}
-					bIsAnimating = false;
-				}
-			);
+                var indexRelativeToPosition = $(this).position().left / pageWidth;
+                //console.log('>> indexRelativeToPosition = ' + indexRelativeToPosition);
+                if(indexRelativeToPosition > 0){
+                    //console.log('>> moving $(this)');
+                    //console.log($(this));
+                    //console.log("to css left = " + ((totalPages - 1) + indexRelativeToPosition) * -pageWidth);
+                    $(this).css('left', ((totalPages - 1) + indexRelativeToPosition) * -pageWidth);
+                }
+                bIsAnimating = false;
+            }
+            );
         }
         
         //We're gonna go Left!
@@ -295,11 +299,11 @@ var TouchCarousel = function(elem, options){
             //console.log('>> LEFT: nextPageNum > currentPage');
             
             if(direction !== 'left'){
-            	reorient('left');
+                reorient('left');
             }
             
             targetSrcDist = parseInt(nextPageNum - currentPage);	// The difference between the current page and the target page
-			//console.log(">> targetSrcDist = " + targetSrcDist);
+            //console.log(">> targetSrcDist = " + targetSrcDist);
 
             if((currentPage + targetSrcDist) > totalPages){  
                 //console.log("(currentPage + targetSrcDist) > totalPages == true");
@@ -312,24 +316,24 @@ var TouchCarousel = function(elem, options){
             
             $(arrPages).animate(
             {
-            	"left": "-=" + pageWidth * targetSrcDist + "px"
-                },
-                animationDuration,
-                function(){
-                	/*console.log("--------------------");
+                "left": "-=" + pageWidth * targetSrcDist + "px"
+            },
+            animationDuration,
+            function(){
+                /*console.log("--------------------");
                 	console.log(">> arrPages LEFT animation callback <<");
                 	console.log('>> page ' + $(this).text() +' animation callback');
                 	console.log('>> left =  ' + $(this).position().left);*/
-                	var indexRelativeToPosition = ($(this).position().left / pageWidth)
-                	//console.log('>> indexRelativeToPosition = ' + indexRelativeToPosition);	
-                	if(indexRelativeToPosition < 0){
-                		//console.log('>> moving $(this)');
-                		//console.log($(this));
-                		//console.log("to css left = " + (1 + (totalPages + indexRelativeToPosition)) * pageWidth);
-                		$(this).css('left', (1 + (totalPages + indexRelativeToPosition)) * pageWidth);
-                	}
-                    bIsAnimating = false;
+                var indexRelativeToPosition = ($(this).position().left / pageWidth)
+                //console.log('>> indexRelativeToPosition = ' + indexRelativeToPosition);	
+                if(indexRelativeToPosition < 0){
+                    //console.log('>> moving $(this)');
+                    //console.log($(this));
+                    //console.log("to css left = " + (1 + (totalPages + indexRelativeToPosition)) * pageWidth);
+                    $(this).css('left', (1 + (totalPages + indexRelativeToPosition)) * pageWidth);
                 }
+                bIsAnimating = false;
+            }
             ); 		
         }
         else{
@@ -338,7 +342,7 @@ var TouchCarousel = function(elem, options){
             bIsAnimating = false;
         }
         
-        $(elem).trigger(jQuery.Event("TouchCarousel.PageChange", { currentPage: currentPage }));
+        //$(elem).trigger(jQuery.Event("TouchCarousel.PageChange", { currentPage: currentPage }));
 
         // Carousel general update
         update();
@@ -366,7 +370,7 @@ var TouchCarousel = function(elem, options){
         });
         
         $(touchPad).draggable({
-        	//revert: true,
+            //revert: true,
             delay: 100,
             scroll: true,
             axis: 'x',
