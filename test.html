@@ -1,41 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <style>
-            div#wrapper {
-                margin: 0 auto;
-                text-align: center;
-            }
-            div#wrapper .carousel_container {
-                width: auto;
-                height: auto;
-                border: 5px solid #000;
-                position: relative;
-            }
-            div.page {
-                text-align: center;
-                width: 100%;
-                height: 100%;
-            }
-            
-            ul#nav {
-                width: 50%;
-                height: 20%;
-                background-color: rgba(1,1,1, .5);
-                color: green;
-                font-size: 24px;
-                font-weight: bold;
-            }
-            ul#nav li {
-                height: 100%;
-                width: auto;
-                display: inline;
-                padding: 5%;
-                margin-right: 2%;
-                background-color: black;
-            }
-        </style>
+        <title>TouchCarousel.js by Keith Rosenberg - github.com/netpoetica, @netpoetica</title>
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+        <link rel="stylesheet" type="text/css" href="css/style.css"
     </head>
     <body>
         <!-- 
@@ -43,7 +11,6 @@
                 <button id="left">LEFT</button> 
                 <button id="right">RIGHT</button>
         -->
-
         <div id='wrapper'>
             <ul id ="nav"></ul>
             <div class = 'carousel_container'>
@@ -57,44 +24,9 @@
         </div>
 
         <script src="//code.jquery.com/jquery.min.js"></script>
-        <script>;window.jQuery || document.write('<script src="js/jquery-1.8.2.min.js"><\/script>')</script>
-        <script src="js/jquery.touchSwipe.min.js"></script>
-        <script src="js/TouchCarousel.min.js"></script>
-        
-        <script>       
-            $(document).ready(function(){
-                
-                // Build a carousel and store a reference to it for manipulation by manual control.
-                var carousel_container = new TouchCarousel('#wrapper .carousel_container', {
-                    pageClass: 'page',
-                    auto: true,
-                    autoDirection: 'right',
-                    height: 200,
-                    width: 400,
-                    pageIndicatorDisabled: true
-                });
-
-                // Build a dynamic menu :-)
-                $('.page').each(function(){
-                   $('<li />')
-                   .text($(this).index() - 1)   // Offset index returning 1 - total instead of 0 to total...
-                   .appendTo('#nav'); 
-                }); 
-                
-                //  Manual controller click handler
-                $('#nav').on('click', 'li', function(){
-                    var target = parseInt($(this).text());      
-                    console.log("Pushing carousel to index " + target)
-                    carousel_container.moveToIndex(target);
-                });
-                
-                //TouchCarousel.Update event listener
-                $('#wrapper').on('TouchCarousel.Update',function(e){
-                    console.log("Current Page: " + e.currentPage);
-                    console.log("Current Direction: " + e.direction);
-                })
-                
-            });
-        </script>
+        <script>;window.jQuery || document.write('<script src="js/lib/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="js/lib/jquery.touchSwipe.min.js"></script>
+        <script src="js/build/TouchCarousel.min.js"></script>
+        <script src="js/test.js"></script>
     </body>
 </html>
