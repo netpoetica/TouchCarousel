@@ -17,12 +17,12 @@ click to scroll. These can be styled by their respective class names or ID names
 	
 			id="touch-carousel-btn-left" class="touch-carousel-btn"
 				
-Touch carousel has dependencies on jQueryUI, jQuery, and jQuery Touch Punch. These awesome
+Touch carousel has dependencies on jQueryUI, jQuery, and touchSwipe. These awesome
 libraries can be found at the following locations:
 	
 https://github.com/jquery/jquery
 https://github.com/jquery/jquery-ui
-https://github.com/furf/jquery-ui-touch-punch
+https://github.com/mattbryson/TouchSwipe-Jquery-Plugin
 	
 Feel free to fork it, use it, make it a million times better, whatever you like, but I would definitely
 like it best if you report issues on GitHub so I can work them out. If you solve an issue, I'd love to
