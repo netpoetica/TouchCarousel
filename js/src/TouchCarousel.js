@@ -8,21 +8,21 @@
 	don't want it to autoscroll, pass options object with auto = false. You can specify buttons
 	of your own that are already in the DOM, or you can use the default buttons. If touch is
 	disabled, the default buttons are invisible objects on the right and left that the user can
-	click to scroll. These can be styled by their respective class names or ID names, ie:
+	click to scroll. These can be styled by their respective class names or IDs, ie:
 
 				id="touch-carousel-btn-left" class="touch-carousel-btn"
 
-	Touch carousel has dependencies on jQueryUI, jQuery, and jQuery Touch Punch. These awesome
+	Touch carousel has dependencies on jQueryUI, jQuery, and TouchSwipe. These awesome
 	libraries can be found at the following locations:
 
 				https://github.com/jquery/jquery
 				https://github.com/jquery/jquery-ui
-				https://github.com/furf/jquery-ui-touch-punch
+				http://labs.skinkers.com/content/touchSwipe/
 
 	Feel free to fork it, use it, make it a million times better, whatever you like, but I would definitely
 	like it best if you report issues on GitHub so I can work them out. If you solve an issue, I'd love to
 	know how you do it! Thanks much,
-	- Keith
+	- Keith (@netpoetica)
 */
 
 /*  *
@@ -30,9 +30,9 @@
  *  TODO: - investigate using .last()
  *  
  *  */
-console.log("Loading TouchCarousel.js...")
+
 var TouchCarousel = function(elem, options){
-    console.log("Instantiating TouchCarousel.js...");
+
     var opt = options || {};
     
     /* **************** OPTION DETAILS ******************* *
@@ -52,7 +52,6 @@ var TouchCarousel = function(elem, options){
     ****************************************************** */
 
     // TODO: TouchCarousel.setContent() instead of new to save memory and use the same one over and over. 
-    
     var _this = this,
     autoIntervalRef = null,
     pageIndicator = null,
@@ -62,7 +61,7 @@ var TouchCarousel = function(elem, options){
     arrPages = $(elem).find('.' + opt.pageClass),
     pageWidthNum,      // Used interneally for page widths after init
     pageWidth = opt.width || $(arrPages[0]).outerWidth(),
-    pageHeight = opt.height || $(arrPages[0]).outerHeight(),
+    //pageHeight = opt.height || $(arrPages[0]).outerHeight(),
     totalPages = arrPages.length - 1,
     bIsAnimating = false,
     animationDuration = opt.animationDuration || 500,
@@ -108,13 +107,13 @@ var TouchCarousel = function(elem, options){
             position: 'absolute',
             top: 0,
             display: 'inline-block',
-            height: pageHeight,
-            width: pageWidth
+            height: '100%',
+            width: '100%'
         });
 
         // Add a page indicator for this page
         if(!opt.pageIndicatorDisabled ){
-            $(pageIndicator).append('<li class="touch-carousel-pager-item" id ="item-' + posCounter + '" style="display: inline;"><img src="' + String(posCounter == currentPage ? opt.pagerImageActive : opt.pagerImageNormal) + '"</li>');
+            $(pageIndicator).append('<li class="touch-carousel-pager-item" id ="item-' + posCounter + '" style="display: inline;"><img src="' + String(posCounter == currentPage ? opt.pagerImageActive : opt.pagerImageNormal) + '" /></li>');
         }
         posCounter++;
         
@@ -173,8 +172,8 @@ var TouchCarousel = function(elem, options){
         bIsAnimating = false;
     }
     /* ******* LISTEN FOR WINDOW ORIENTATION EVENT, REORIENT ******** */
-    $(window).on('orientationchange resize', function(){
-        reorient(direction);
+    $(window).on('orientationchange, resize', function(){
+        reorient(direction || 'left');
     }); 
     
     
@@ -210,7 +209,7 @@ var TouchCarousel = function(elem, options){
             else if(direction == 'right'){
                 _this.moveToIndex(currentPage - 1);
             }
-        }, opt.autoDuration || 4000)
+        }, opt.autoDuration || 6600)
     }
     
     /* *** GET DIMENSIONS ***
@@ -291,7 +290,7 @@ var TouchCarousel = function(elem, options){
         
         // We're gonna go right
         if(nextPageNum < currentPage){
-            console.log('>> MOVE RIGHT: nextPageNum('+nextPageNum+') < currentPage('+ currentPage + '), current direction = ' + direction); 
+            //console.log('>> MOVE RIGHT: nextPageNum('+nextPageNum+') < currentPage('+ currentPage + '), current direction = ' + direction); 
 	
             if(direction !== 'right'){
                 reorient('right');
@@ -317,7 +316,7 @@ var TouchCarousel = function(elem, options){
 			
             
             
-            $(arrPages).show().animate(
+            $(arrPages).animate(
             {
                 "left": "+=" + pageWidthNum * targetSrcDist + "px"
             },
@@ -335,10 +334,8 @@ var TouchCarousel = function(elem, options){
                     //console.log("to css left = " + ((totalPages - 1) + indexRelativeToPosition) * -pageWidthNum);
                     $(this).css('left', ((totalPages - 1) + indexRelativeToPosition) * -pageWidthNum);
                 }
-                if(indexRelativeToPosition !== 0){
-                    $(this).hide();
-                }
                 bIsAnimating = false;
+                //$(elem).trigger('TouchCarousel.animationComplete', false);
             });
         }
         
@@ -362,7 +359,7 @@ var TouchCarousel = function(elem, options){
             }
             //console.log('>> new currentPage aka target page = ' + currentPage); 
             
-            $(arrPages).show().animate(
+            $(arrPages).animate(
             {
                 "left": "-=" + pageWidthNum * targetSrcDist + "px"
             },
@@ -379,9 +376,6 @@ var TouchCarousel = function(elem, options){
                     //console.log($(this));
                     //console.log("to css left = " + (1 + (totalPages + indexRelativeToPosition)) * pageWidthNum);
                     $(this).css('left', (1 + (totalPages + indexRelativeToPosition)) * pageWidthNum);
-                }
-                if(indexRelativeToPosition !== 0){
-                    $(this).hide();
                 }
                 bIsAnimating = false;
             }
@@ -413,8 +407,8 @@ var TouchCarousel = function(elem, options){
             'z-index': 9997,	// Buttons need to be above the 9998 z-index
             'background-color': 'rgba(1,0,0, ' + opt.touchPadVisibility || 0 +  ')',
             position: 'absolute',
-            width: pageWidth,
-            height: pageHeight      //$(arrPages).first().outerHeight()
+            width: typeof containerWidth === 'number' ? containerWidth + 'px' : containerWidth,
+            height: typeof containerHeight === 'number' ? containerHeight + 'px' : containerHeight      //$(arrPages).first().outerHeight()
         });
         
         $(touchPad).swipe({

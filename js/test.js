@@ -1,5 +1,5 @@
 $(document).ready(function(){
-
+    // NOTE: console.logs left in for user to grok paging mechanism
     // Build a carousel and store a reference to it for manipulation by manual control.
     var carousel_container = new TouchCarousel('#wrapper .carousel_container', {
         pageClass: 'page',
