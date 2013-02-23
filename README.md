@@ -1,12 +1,11 @@
-TouchCarousel
+Touch Carousel
 =============
 
-A jQuery Touch-enabled, auto-scrolling and infinite carousel for all devices including mobile
+A jQuery/JavaScript Touch enabled, auto-scrolling and infinite carousel for all devices including mobile
 
 TouchCarousel.js
 by Keith Rosenberg (http://www.github.com/netpoetica)
 
-Description: 
 TouchCarousel is an infinitely-looping, indexable carousel which can be configured in many ways. See
 options for details. TouchCarousel assumes you want this carousel to work on a mobile
 device or tablet - if that's not the case, pass options with touchDisabled = true. If you
@@ -15,7 +14,7 @@ of your own that are already in the DOM, or you can use the default buttons. If 
 disabled, the default buttons are invisible objects on the right and left that the user can
 click to scroll. These can be styled by their respective class names or ID names, ie:
 	
-			id="touch-carousel-btn-left" class="touch-carousel-btn"
+	id="touch-carousel-btn-left" class="touch-carousel-btn"
 				
 Touch carousel has dependencies on jQueryUI, jQuery, and touchSwipe. These awesome
 libraries can be found at the following locations:
